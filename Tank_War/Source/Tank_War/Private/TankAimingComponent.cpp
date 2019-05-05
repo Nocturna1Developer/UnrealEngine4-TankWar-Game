@@ -1,7 +1,7 @@
 #include "../Tank_War/Public/TankAimingComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Tank_War/Public/TankBarrel.h"
 #include "Tank_War.h"
-
-
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -11,55 +11,49 @@ UTankAimingComponent::UTankAimingComponent()
 	bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
 }
 
-void UTankAimingComponent::SetBarrelReference(UStaticMeshComponent* BarrelToSet)
+void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet)
 {
 	Barrel = BarrelToSet;
-}
-
-// Called when the game starts
-void UTankAimingComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	
-}
-
-
-// Called every frame
-void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
 // get the name of the thing the tank is aiming at
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
+	//we do this to protect the barrel and prevent errors
 	if (!Barrel) { return; }
-
 	FVector OutLaunchVelocity;
+	// gets the socket from the barrel asset we creeated
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
-	if (UGameplayStatics::SuggestProjectileVelocity
+	
+	//if we have a solution move to the next code block
+	bool bHaveAimSolution = UGameplayStatics::SuggestProjectileVelocity
 	(
 		this,
 		OutLaunchVelocity,
 		StartLocation,
 		HitLocation,
 		LaunchSpeed,
-		false,
-		0,
-		0,
 		ESuggestProjVelocityTraceOption::DoNotTrace
-	)
-		)
+	);
+
+	// calls the move barrel function 
+	if (bHaveAimSolution)
 	{
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
-		UE_LOG(LogTemp, Warning, TEXT("Aiming at %s"), *AimDirection.ToString());
+		MoveBarrelTowards(AimDirection);
 	}
 	// If no solution found do nothing
+}
+
+// MoveBarrelTowards at paticular aim direction
+void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
+{
+	// gets the x direction of the barrel to get ,rotation gets yaw, pitch, and roll
+	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
+	auto AimAsRotator = AimDirection.Rotation();
+	//gets the diff of roation
+	auto DeltaRotator = AimAsRotator - BarrelRotator;
+	Barrel->Elevate(5);
 }

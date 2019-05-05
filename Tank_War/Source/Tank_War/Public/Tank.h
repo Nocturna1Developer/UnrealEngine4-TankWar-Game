@@ -7,6 +7,8 @@
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h"
 
+class UTankBarrel;
+
 UCLASS()
 class TANK_WAR_API ATank : public APawn
 {
@@ -18,7 +20,7 @@ public:
 
 	// makes a method we can acctaully call from blueprint called 'setbarrelrefrence'
 	UFUNCTION(BlueprintCallable, Category = Setup)
-	void SetBarrelReference(UStaticMeshComponent* BarrelToSet);
+	void SetBarrelReference(UTankBarrel* BarrelToSet);
 
 // the name comes from tankaimingcomponenet.cpp has the ability to have an refrence
 protected:
