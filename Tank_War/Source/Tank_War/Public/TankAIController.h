@@ -1,9 +1,11 @@
 #pragma once
 
-#include "Tank.h"
+
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "TankAIController.generated.h"
+
+class ATank;
 
 UCLASS()
 class TANK_WAR_API ATankAIController : public AAIController
