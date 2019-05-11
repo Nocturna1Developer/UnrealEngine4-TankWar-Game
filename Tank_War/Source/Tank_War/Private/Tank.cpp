@@ -53,6 +53,7 @@ void ATank::Fire()
 		Projectile->LaunchProjectile(LaunchSpeed);
 		//resets lasttimefired
 		LastFireTime = FPlatformTime::Seconds();
+	}
 }
 
 
@@ -60,12 +61,13 @@ void ATank::Fire()
 void ATank::SetBarrelReference(UTankBarrel* BarrelToSet)
 {
 	TankAimingComponent->SetBarrelReference(BarrelToSet);
-	//since barell is now local we have to set it
-	Barrel = BarrelToSet;
+	//since barrel is now local we have to set it
+	//Barrel = BarrelToSet;
 }
 
 void ATank::SetTurretReference(UTankTurret* TurretToSet)
 {
 	TankAimingComponent->SetTurretReference(TurretToSet);
+	//Turret = TurretToSet;
 }
 

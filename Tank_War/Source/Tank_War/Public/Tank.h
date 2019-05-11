@@ -13,6 +13,9 @@ class UTankAimingComponent;
 class UProjectileComponent;
 class AProjectile;
 
+// 'editduafualts' basically means each actor must have the same value 
+// only lets you chnage it in the blueprint editor
+
 UCLASS()
 class TANK_WAR_API ATank : public APawn
 {
@@ -34,11 +37,6 @@ public:
 
 	void AimAt(FVector HitLocation);
 
-	//limits frame by frame shots
-	float ReloadTimeInSeconds = 3;
-
-	double LastFireTime = 0;
-
 // the name comes from tankaimingcomponenet.cpp has the ability to have an refrence
 protected:
 	UTankAimingComponent* TankAimingComponent = nullptr;
@@ -54,15 +52,22 @@ private:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	//makes a variable in the unreal editor like serializefeild
-	UPROPERTY(EditAnywhere, Category = Firing)
-	float LaunchSpeed = 4000;
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	float LaunchSpeed = 4000;;
 
 	//enforces Udamagetype classes and narrows our chouses to only projectile classes
-	UPROPERTY(EditAnywhere, Category = Setup)
+	UPROPERTY(EditDefaultsOnly, Category = Setup)
 	TSubclassOf<AProjectile> ProjectileBlueprint;
+
+	//limits frame by frame shots
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	float ReloadTimeInSeconds = 3;
+
+	double LastFireTime = 0;
 
 	// Local barrel reference for spawning projectile
 	UTankBarrel* Barrel = nullptr;
+
 	
 	
 };

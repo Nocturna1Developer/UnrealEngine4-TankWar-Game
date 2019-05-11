@@ -29,14 +29,14 @@ private:
 	bool GetSightRayHitLocation(FVector& HitLocation) const;
 
 	//gets the location of the dot
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float CrosshairXLocation = 0.5;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float CrosshairYLocation = 0.3333;
 
 	//how far the crosshaor can detect
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float LineTraceRange = 1000000;
 
 	//this will tell us the direction we are pointing at in the world (up, down etc.)

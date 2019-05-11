@@ -13,8 +13,6 @@ void ATankAIController::BeginPlay()
 void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (GetPlayerTank())
-	{
 		//finds the player tank
 		auto PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
 		auto ControlledTank = Cast<ATank>(GetPawn());
@@ -29,7 +27,6 @@ void ATankAIController::Tick(float DeltaTime)
 			//AI fires where the barrel is pointing every frame
 			ControlledTank->Fire(); 
 		}
-	}
 }
 
 
