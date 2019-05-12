@@ -11,6 +11,7 @@ class UTankBarrel;
 class UTankTurret;
 class UTankAimingComponent;
 class UProjectileComponent;
+class UTankMovementComponent;
 class AProjectile;
 
 // 'editduafualts' basically means each actor must have the same value 
@@ -40,6 +41,10 @@ public:
 // the name comes from tankaimingcomponenet.cpp has the ability to have an refrence
 protected:
 	UTankAimingComponent* TankAimingComponent = nullptr;
+
+	// will allow us to drag the component to the blueprint editor
+	UPROPERTY(BlueprintReadOnly)
+	UTankMovementComponent* TankMovementComponent = nullptr;
 
 private:
 	// Sets default values for this pawn's properties

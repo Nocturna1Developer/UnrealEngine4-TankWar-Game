@@ -20,6 +20,9 @@ private:
 	//returns a frame by frame
 	virtual void Tick(float DeltaSeconds) override;
 	
+	// How close can the AI tank get
+	float AcceptanceRadius = 3000;
+
 	//trying to get player controller here
 	ATank* GetPlayerTank() const;
 	

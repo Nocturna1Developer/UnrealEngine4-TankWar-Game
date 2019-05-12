@@ -2,6 +2,7 @@
 #include "../Tank_War/Public/TankBarrel.h"
 #include "../Tank_War/Public/Projectile.h"
 #include "../Tank_War/Public/TankAimingComponent.h"
+#include "../Tank_War/Public/TankMovementComponent.h"
 #include "../Tank_War/Public/Tank.h"
 
 ATank::ATank()
@@ -10,8 +11,9 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 
 	//CREATES and aiming component in the bluprint editor
-	//This is the base for everything, the edior inherites this 
+	//This is the base for everything, the editor inherites this 
 	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
+	
 	
 }
 
@@ -50,6 +52,7 @@ void ATank::Fire()
 			Barrel->GetSocketLocation(FName("Projectile")),
 			Barrel->GetSocketRotation(FName("Projectile"))
 			);
+
 		Projectile->LaunchProjectile(LaunchSpeed);
 		//resets lasttimefired
 		LastFireTime = FPlatformTime::Seconds();
