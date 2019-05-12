@@ -12,10 +12,12 @@ class TANK_WAR_API ATankPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
-//prototypes the functions
-private:
+//since its callable it has to be protected
+protected:
+	UFUNCTION(BlueprintCallable, Category = "Setup")
 	ATank* GetControlledTank() const;
-	
+
+private:
 	//makes sure somthing else is up the inheritance tree with same excat name
 	virtual void BeginPlay() override;
 

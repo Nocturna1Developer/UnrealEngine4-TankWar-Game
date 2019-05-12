@@ -6,6 +6,16 @@
 #include "Components/ActorComponent.h"
 #include "TankAimingComponent.generated.h"
 
+// this is becuase we need many diffrent states for out aiming reticle
+UENUM()
+enum class EFiringState : uint8
+{
+	Reloading,
+	Aiming,
+	Locked
+};
+
+
 //tells the system that a tank barrel exists, forward declaration
 class UTankBarrel;
 class UTankTurret;
@@ -17,24 +27,25 @@ class TANK_WAR_API UTankAimingComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
-	UTankAimingComponent();
-
-	// the barrel is a static mesh componenet
-	// we use this to allow a refrence to the starting of the barrel
-	void SetBarrelReference(UTankBarrel* BarrelToSet);
-
-	// we use this to allow a refrence to the starting of the turret
-	void SetTurretReference(UTankTurret* TurretToSet);
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+	void Initialise(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
 
 	//tells the tank to start aiming at a paticular spot
 	void AimAt(FVector HitLocation, float LaunchSpeed);
 
+	void MoveBarrelTowards(FVector AimDirection);
+
+// Protect this beucase we asking this to refrence this property from subclass Aiming componenet blueprint
+// C++ is the parent, blueprint is the subclasss
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = "State")
+	EFiringState FiringState = EFiringState::Aiming;
+
 private:
 	//use the 'U' beucase its a codeing standard, it a a class that inherits from UObject 
 	UTankBarrel* Barrel = nullptr;
-	void MoveBarrelTowards(FVector AimDirection);
-
 	UTankTurret* Turret = nullptr;
+
+	UTankAimingComponent();
 	
 };
