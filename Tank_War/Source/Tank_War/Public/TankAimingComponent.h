@@ -39,7 +39,7 @@ public:
 // C++ is the parent, blueprint is the subclasss
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
-	EFiringState FiringState = EFiringState::Aiming;
+	EFiringState FiringState = EFiringState::Locked;
 
 private:
 	//use the 'U' beucase its a codeing standard, it a a class that inherits from UObject 
