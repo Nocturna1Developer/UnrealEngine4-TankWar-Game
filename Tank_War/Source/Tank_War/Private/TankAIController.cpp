@@ -2,7 +2,7 @@
 #include "../Tank_War/Public/Tank.h"
 #include "Tank_War.h"
 
-
+// Depends on movement component via pathfinding system
 
 void ATankAIController::BeginPlay()
 {
@@ -17,7 +17,7 @@ void ATankAIController::Tick(float DeltaTime)
 		auto PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
 		auto ControlledTank = Cast<ATank>(GetPawn());
 
-		if (PlayerTank)
+		if (ensure(PlayerTank))
 		{
 			// Move towards the player (PathFinding)
 			MoveToActor(PlayerTank, AcceptanceRadius);

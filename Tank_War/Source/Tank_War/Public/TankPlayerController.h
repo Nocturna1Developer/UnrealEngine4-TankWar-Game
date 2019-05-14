@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright EmbraceIT Ltd.
 
 #pragma once
 
@@ -7,16 +7,24 @@
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h" //must be the last include
 
+class ATank;
+class UTankTankAimingComponent;
+
 UCLASS()
 class TANK_WAR_API ATankPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
-//since its callable it has to be protected
+// Responsible for helping the player aim.
 protected:
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	ATank* GetControlledTank() const;
 
+	// protected because the blueprint we are using this in is a subclass
+	// this is like our 'Event Play' function in blurprint that passes a aiming comp refrence
+	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
+	void FoundAimingComponent(UTankAimingComponent* AimCompRef);
+	
 private:
 	//makes sure somthing else is up the inheritance tree with same excat name
 	virtual void BeginPlay() override;

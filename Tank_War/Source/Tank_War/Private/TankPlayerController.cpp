@@ -1,5 +1,7 @@
+// Copyright EmbraceIT Ltd.
 
 #include "../Tank_War/Public/TankPlayerController.h"
+#include "../Tank_War/Public/TankAimingComponent.h"
 #include "../Tank_War/Public/Tank.h"
 #include "Tank_War.h"
 
@@ -7,6 +9,17 @@
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// finds the aiming componet and protects it
+	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
+	if (ensure(AimingComponent))
+	{
+		FoundAimingComponent(AimingComponent);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player controller can't find aiming component at Begin Play"))
+	}
 }
 
 //helps the player aim toward the crosshair frame by frame
@@ -27,7 +40,7 @@ ATank* ATankPlayerController::GetControlledTank() const
 //this is where the tank knows what to aim at
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!GetControlledTank()) { return; }
+	if (!ensure(GetControlledTank())) { return; }
 
 	//An Fvector is in 3-D space composed of components (X, Y, Z) with floating point precision i
 	//finds out what the hit location is

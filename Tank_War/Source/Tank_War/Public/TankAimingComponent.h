@@ -1,4 +1,4 @@
-// Cred to Udemy
+// Copyright EmbraceIT Ltd.
 
 #pragma once
 

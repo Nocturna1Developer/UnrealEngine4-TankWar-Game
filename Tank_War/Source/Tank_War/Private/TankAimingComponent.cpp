@@ -1,3 +1,5 @@
+// Copyright EmbraceIT Ltd.
+
 #include "../Tank_War/Public/TankAimingComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Tank_War/Public/TankBarrel.h"
@@ -19,8 +21,9 @@ void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* Tur
 
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
-	//we do this to protect the barrel and prevent errors
-	if (!Barrel) { return; }
+	//we do this to protect the barrel and prevent errors ensure is a macro that explains important problems
+	//ensure helps prevent engine crash
+	if (!ensure(Barrel)) { return; }
 	FVector OutLaunchVelocity;
 	// gets the socket from the barrel asset we creeated
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
@@ -50,7 +53,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 // MoveBarrelTowards at paticular aim direction
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {
-	if (!Barrel || !Turret) { return; }
+	if (!ensure(Barrel) || !ensure(Turret)) { return; }
 
 	// gets the x direction of the barrel to get ,rotation gets yaw, pitch, and roll
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
