@@ -22,6 +22,7 @@ void ATankPlayerController::Tick(float DeltaTime)
 //An Fvector is in 3-D space composed of components (X, Y, Z) with floating point precision 1 finds out what the hit location is
 void ATankPlayerController::AimTowardsCrosshair()
 {
+	if (!GetPawn()) { return; }
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (!ensure(AimingComponent)) { return; }
 	FVector HitLocation; 
