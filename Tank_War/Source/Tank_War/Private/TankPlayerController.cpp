@@ -2,24 +2,15 @@
 
 #include "../Tank_War/Public/TankPlayerController.h"
 #include "../Tank_War/Public/TankAimingComponent.h"
-#include "../Tank_War/Public/Tank.h"
 #include "Tank_War.h"
 
-
+// finds the aiming componet and protects it
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// finds the aiming componet and protects it
-	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
-	if (ensure(AimingComponent))
-	{
-		FoundAimingComponent(AimingComponent);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player controller can't find aiming component at Begin Play"))
-	}
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
+	FoundAimingComponent(AimingComponent);
 }
 
 //helps the player aim toward the crosshair frame by frame
@@ -28,27 +19,16 @@ void ATankPlayerController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	AimTowardsCrosshair();
 }
-
-//determines what is controlling what tank 
-ATank* ATankPlayerController::GetControlledTank() const
-{
-	//gets the current tank
-	return Cast<ATank>(GetPawn());
-
-}
-
-//this is where the tank knows what to aim at
+//An Fvector is in 3-D space composed of components (X, Y, Z) with floating point precision 1 finds out what the hit location is
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!ensure(GetControlledTank())) { return; }
-
-	//An Fvector is in 3-D space composed of components (X, Y, Z) with floating point precision i
-	//finds out what the hit location is
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
 	FVector HitLocation; 
 	if (GetSightRayHitLocation(HitLocation)) 
 	{
 		//the tank will aim at the location you hit
-		GetControlledTank()->AimAt(HitLocation);
+		AimingComponent->AimAt(HitLocation);
 	}
 }
 

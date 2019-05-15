@@ -4,6 +4,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "../Tank_War/Public/TankBarrel.h"
 #include "../Tank_War/Public/TankTurret.h"
+#include "../Tank_War/Public/Projectile.h"
 #include "Tank_War.h"
 
 // Sets default values for this component's properties
@@ -19,7 +20,7 @@ void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* Tur
 	Turret = TurretToSet;
 }
 
-void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
+void UTankAimingComponent::AimAt(FVector HitLocation)
 {
 	//we do this to protect the barrel and prevent errors ensure is a macro that explains important problems
 	//ensure helps prevent engine crash
@@ -64,3 +65,25 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	Turret->Rotate(DeltaRotator.Yaw);
 }
 
+
+void UTankAimingComponent::Fire()
+{
+	if (!ensure(Barrel && ProjectileBlueprint)) { return; }
+	//sets a timer so that it only fres witin certain inervals reloads the barrel
+	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
+
+	// Spawns a projectile at the socket location on the barrel and introduces the concept of projectile to the computer
+	if (isReloaded)
+	{
+		// Spawn a projectile at the socket location on the barrel
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(
+			ProjectileBlueprint,
+			Barrel->GetSocketLocation(FName("Projectile")),
+			Barrel->GetSocketRotation(FName("Projectile"))
+			);
+
+		// Resets last time fired
+		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+	}
+}

@@ -7,7 +7,6 @@
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h" //must be the last include
 
-class ATank;
 class UTankTankAimingComponent;
 
 UCLASS()
@@ -17,9 +16,6 @@ class TANK_WAR_API ATankPlayerController : public APlayerController
 	
 // Responsible for helping the player aim.
 protected:
-	UFUNCTION(BlueprintCallable, Category = "Setup")
-	ATank* GetControlledTank() const;
-
 	// protected because the blueprint we are using this in is a subclass
 	// this is like our 'Event Play' function in blurprint that passes a aiming comp refrence
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")

@@ -1,5 +1,5 @@
 #include "../Tank_War/Public/TankAIController.h"
-#include "../Tank_War/Public/Tank.h"
+#include "../Tank_War/Public/TankAimingComponent.h"
 #include "Tank_War.h"
 
 // Depends on movement component via pathfinding system
@@ -13,21 +13,22 @@ void ATankAIController::BeginPlay()
 void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-		//finds the player tank
-		auto PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
-		auto ControlledTank = Cast<ATank>(GetPawn());
 
-		if (ensure(PlayerTank))
-		{
-			// Move towards the player (PathFinding)
-			MoveToActor(PlayerTank, AcceptanceRadius);
+	auto PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
+	auto ControlledTank = GetPawn();
 
-			// Aim towards the player
-			ControlledTank->AimAt(PlayerTank->GetActorLocation());
+	if (!ensure(PlayerTank && ControlledTank)) { return; }
 
-			//AI fires where the barrel is pointing every frame
-			ControlledTank->Fire(); 
-		}
+	// Move towards the player (PathFinding)
+	MoveToActor(PlayerTank, AcceptanceRadius);
+
+	// Aims towards the player
+	auto AimingComponent = ControlledTank->FindComponentByClass<UTankAimingComponent>();
+	AimingComponent->AimAt(PlayerTank->GetActorLocation());
+
+	// Fires towards the player
+	AimingComponent->Fire(); 
+		
 }
 
 
