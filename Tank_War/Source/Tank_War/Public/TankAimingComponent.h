@@ -37,11 +37,16 @@ public:
 // C++ is the parent, blueprint is the subclasss, will allow us to drag this component to the blueprint editor
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
-	EFiringState FiringState = EFiringState::Locked;
+		EFiringState FiringState = EFiringState::Reloading;
 
 private:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
+
+	virtual void BeginPlay() override;
+
+	// Copy and pasted from actor component.h
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction);
 
 	void MoveBarrelTowards(FVector AimDirection);
 
