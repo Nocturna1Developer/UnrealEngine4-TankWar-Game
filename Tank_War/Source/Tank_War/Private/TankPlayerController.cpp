@@ -25,8 +25,11 @@ void ATankPlayerController::AimTowardsCrosshair()
 	if (!GetPawn()) { return; }
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (!ensure(AimingComponent)) { return; }
-	FVector HitLocation; 
-	if (GetSightRayHitLocation(HitLocation)) 
+	FVector HitLocation;
+
+	// Lets us know we if can actually hit the things we are aiming at
+	bool bGotHitLocation = GetSightRayHitLocation(HitLocation);
+	if (bGotHitLocation) 
 	{
 		//the tank will aim at the location you hit
 		AimingComponent->AimAt(HitLocation);
@@ -48,9 +51,9 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	if (GetLookDirection(ScreenLocation, LookDirection))
 	{
 		// Line-trace along that LookDirection, and see what we hit (up to max range)
-		GetLookVectorHitLocation(LookDirection, HitLocation);
+		return GetLookVectorHitLocation(LookDirection, HitLocation);
 	}
-	return true;	
+	return false;	
 }
 
 //if the linetrace succeeds set the hit location and useing start and end location of the player

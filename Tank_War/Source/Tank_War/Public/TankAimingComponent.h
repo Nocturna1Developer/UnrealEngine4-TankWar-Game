@@ -12,7 +12,8 @@ enum class EFiringState : uint8
 {
 	Reloading,
 	Aiming,
-	Locked
+	Locked,
+	OutOfAmmo
 };
 
 class UTankBarrel;
@@ -29,28 +30,38 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void Initialise(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
 
-	void AimAt(FVector HitLocation);
-
 	UFUNCTION(BlueprintCallable, Category = "Firing")
 	void Fire();
+
+	void AimAt(FVector HitLocation);
+
+	EFiringState GetFiringState() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Firing")
+	int GetRoundsLeft() const;
 	
 // C++ is the parent, blueprint is the subclasss, will allow us to drag this component to the blueprint editor
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
-		EFiringState FiringState = EFiringState::Reloading;
+	EFiringState FiringState = EFiringState::Reloading;
 
 private:
-	// Sets default values for this component's properties
+	// Copy and pasted from actor component.h
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction);
+	
 	UTankAimingComponent();
 
 	virtual void BeginPlay() override;
 
-	// Copy and pasted from actor component.h
-	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction);
-
 	void MoveBarrelTowards(FVector AimDirection);
 
 	bool IsBarrelMoving();
+
+	double LastFireTime = 0;
+
+	int RoundsLeft = 3;
+
+	FVector AimDirection;
 
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
@@ -65,7 +76,5 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	float ReloadTimeInSeconds = 3;
 
-	double LastFireTime = 0;
 
-	FVector AimDirection;
 };

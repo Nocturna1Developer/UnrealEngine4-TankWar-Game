@@ -7,7 +7,8 @@
 #include "../Tank_War/Public/Projectile.h"
 #include "Tank_War.h"
 
-// Sets default values for this component's properties
+// We never want assertions triggering in production code, they are for development and debugging only. 
+// When the player is playing we need to handle errors.
 UTankAimingComponent::UTankAimingComponent()
 {
 	bWantsBeginPlay = true;
@@ -26,10 +27,14 @@ void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* Tur
 	Turret = TurretToSet;
 }
 
-
 // Sets logic for relaoding and firing, every frame asks is it time for relaoding etc
 void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
+	// Out Of Ammo
+	if (RoundsLeft <= 0)
+	{
+		FiringState = EFiringState::OutOfAmmo;
+	}
 	// Reloads
 	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
 	{
@@ -45,6 +50,18 @@ void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickTy
 	{
 		FiringState = EFiringState::Locked;
 	}
+}
+
+// Returns how much ammo we actually have left
+int UTankAimingComponent::GetRoundsLeft() const
+{
+	return RoundsLeft;
+}
+
+// Simply returns the firing state of the AI tank (The ENUM)
+EFiringState UTankAimingComponent::GetFiringState() const
+{
+	return FiringState;
 }
 
 // If forward direction and aim direction are equal then the barrel is not moving 
@@ -98,14 +115,22 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	//gets the diff of roation
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 	Barrel->Elevate(DeltaRotator.Pitch);
-	Turret->Rotate(DeltaRotator.Yaw);
+	// Always yaw the shortest way so it doesnt turn the long way around iff Absolut value is less than 180 we go backwards to avoid going the long way
+	if (FMath::Abs(DeltaRotator.Yaw) < 180)
+	{
+		Turret->Rotate(DeltaRotator.Yaw);
+	}
+	else
+	{
+		Turret->Rotate(-DeltaRotator.Yaw);
+	}
 }
 
-
+// Fires the projectile
 void UTankAimingComponent::Fire()
 {
 	// Spawns a projectile at the socket location on the barrel and introduces the concept of projectile to the computer
-	if (FiringState != EFiringState::Reloading)
+	if (FiringState == EFiringState::Locked || FiringState == EFiringState::Aiming)
 	{
 		if (!ensure(Barrel)) { return; }
 		if (!ensure(ProjectileBlueprint)) { return; }
@@ -118,5 +143,6 @@ void UTankAimingComponent::Fire()
 		// Resets last time fired
 		Projectile->LaunchProjectile(LaunchSpeed);
 		LastFireTime = FPlatformTime::Seconds();
+		RoundsLeft--;
 	}
 }

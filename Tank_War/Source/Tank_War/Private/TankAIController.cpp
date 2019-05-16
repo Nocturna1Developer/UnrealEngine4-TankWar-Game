@@ -26,8 +26,11 @@ void ATankAIController::Tick(float DeltaTime)
 	auto AimingComponent = ControlledTank->FindComponentByClass<UTankAimingComponent>();
 	AimingComponent->AimAt(PlayerTank->GetActorLocation());
 
-	// Fires towards the player
-	AimingComponent->Fire(); 
+	// Fires towards the player only if the tank is locked on, prevents it from firing as soo as the game starts
+	if (AimingComponent->GetFiringState() == EFiringState::Locked)
+	{
+		AimingComponent->Fire(); // TODO limit firing rate
+	}
 		
 }
 
