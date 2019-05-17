@@ -38,7 +38,7 @@ public:
 	EFiringState GetFiringState() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Firing")
-	int GetRoundsLeft() const;
+	int32 GetRoundsLeft() const;
 	
 // C++ is the parent, blueprint is the subclasss, will allow us to drag this component to the blueprint editor
 protected:
@@ -59,7 +59,7 @@ private:
 
 	double LastFireTime = 0;
 
-	int RoundsLeft = 3;
+	
 
 	FVector AimDirection;
 
@@ -67,6 +67,9 @@ private:
 	UTankTurret* Turret = nullptr;
 
 	// Makes a variable in unreal like serialize field in unity
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+	int32 RoundsLeft = 3;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	float LaunchSpeed = 4000;
 
