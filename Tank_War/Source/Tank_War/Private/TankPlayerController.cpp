@@ -2,7 +2,28 @@
 
 #include "../Tank_War/Public/TankPlayerController.h"
 #include "../Tank_War/Public/TankAimingComponent.h"
+#include "../Tank_War/Public/Tank.h"
 #include "Tank_War.h"
+
+// The same as the functin in AI controller
+void ATankPlayerController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+	if (InPawn)
+	{
+		auto PossessedTank = Cast<ATank>(InPawn);
+		if (!ensure(PossessedTank)) { return; }
+
+		// Subscribe our local method to the tank's death event
+		PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::OnPossedTankDeath);
+	}
+}
+
+// After you die you will automatically stop possesing the tank
+void ATankPlayerController::OnPossedTankDeath()
+{
+	StartSpectatingOnly();
+}
 
 // finds the aiming componet and protects it
 void ATankPlayerController::BeginPlay()

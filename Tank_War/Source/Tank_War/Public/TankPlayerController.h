@@ -20,12 +20,16 @@ protected:
 	// this is like our 'Event Play' function in blurprint that passes a aiming comp refrence
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
 	void FoundAimingComponent(UTankAimingComponent* AimCompRef);
+
+	UFUNCTION()
+	void OnPossedTankDeath();
 	
 private:
-	//makes sure somthing else is up the inheritance tree with same excat name
+	void SetPawn(APawn * InPawn);
+
+	// Override makes sure somthing else is up the inheritance tree with same excat name
 	virtual void BeginPlay() override;
 
-	//frame by frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Start the tank moving the barrel so that a shot would hit where the crosshair intersects the world
