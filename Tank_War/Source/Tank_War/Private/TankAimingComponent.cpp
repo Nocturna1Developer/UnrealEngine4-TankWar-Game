@@ -11,13 +11,13 @@
 // When the player is playing we need to handle errors.
 UTankAimingComponent::UTankAimingComponent()
 {
-	bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UTankAimingComponent::BeginPlay()
 {
 	// So that first first is after initial reload
+	Super::BeginPlay();
 	LastFireTime = FPlatformTime::Seconds();
 }
 
@@ -105,14 +105,14 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 }
 
 // MoveBarrelTowards at paticular aim direction
-void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
+void UTankAimingComponent::MoveBarrelTowards(FVector TargetAimDirection)
 {
 	if (!ensure(Barrel) || !ensure(Turret)) { return; }
 
 	// gets the x direction of the barrel to get, rotation gets yaw, pitch, and roll
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
-	auto AimAsRotator = AimDirection.Rotation();
-	//gets the diff of roation
+	auto AimAsRotator = TargetAimDirection.Rotation();
+	// Gets the difference of the roation
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 	Barrel->Elevate(DeltaRotator.Pitch);
 	// Always yaw the shortest way so it doesnt turn the long way around iff Absolut value is less than 180 we go backwards to avoid going the long way
