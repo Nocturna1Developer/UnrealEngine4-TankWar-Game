@@ -38,7 +38,7 @@ void ATankAIController::Tick(float DeltaTime)
 	auto PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
 	auto ControlledTank = GetPawn();
 
-	if (!ensure(PlayerTank && ControlledTank)) { return; }
+	if (!(PlayerTank && ControlledTank)) { return; }
 
 	// Move towards the player (PathFinding)
 	MoveToActor(PlayerTank, AcceptanceRadius);
@@ -50,7 +50,7 @@ void ATankAIController::Tick(float DeltaTime)
 	// Fires towards the player only if the tank is locked on, prevents it from firing as soo as the game starts
 	if (AimingComponent->GetFiringState() == EFiringState::Locked)
 	{
-		AimingComponent->Fire(); // TODO limit firing rate
+		AimingComponent->Fire(); 
 	}
 		
 }

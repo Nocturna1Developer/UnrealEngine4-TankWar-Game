@@ -25,16 +25,17 @@ void ATankPlayerController::OnPossedTankDeath()
 	StartSpectatingOnly();
 }
 
-// finds the aiming componet and protects it
+// Finds the aiming componet and protects it
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	if (!GetPawn()) return;
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (!ensure(AimingComponent)) { return; }
 	FoundAimingComponent(AimingComponent);
 }
 
-//helps the player aim toward the crosshair frame by frame
+// Helps the player aim toward the crosshair frame by frame
 void ATankPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -52,7 +53,7 @@ void ATankPlayerController::AimTowardsCrosshair()
 	bool bGotHitLocation = GetSightRayHitLocation(HitLocation);
 	if (bGotHitLocation) 
 	{
-		//the tank will aim at the location you hit
+		// The tank will aim at the location you hit
 		AimingComponent->AimAt(HitLocation);
 	}
 }
